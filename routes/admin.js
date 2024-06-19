@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { checkadmin } = require('../middleware/authentication')
+const { checkadmin, getadmin } = require('../middleware/authentication')
 const { catchError } = require('../middleware/errors');
 
 const Authentication = require('../controllers/authentication');
@@ -15,7 +15,8 @@ const recruitment = require('../controllers/recruitment');
 
 //AUTHENTICATION ROUTES
 router.route('/login')
-    .post(catchError(Authentication.login_school));
+    .post(catchError(Authentication.login_school))
+    .get(checkadmin, catchError(getadmin));
 
 router.route('/signup')
     .post(catchError(Authentication.signup_school));
@@ -69,7 +70,7 @@ router.route('/leaves')
 
 router.route('/leaves/:id')
     .get(checkadmin, catchError(leave.getOneLeaveS))
-    .put(checkadmin, catchError(leave.approveLeave))
+    .post(checkadmin, catchError(leave.approveLeave))
     .delete(checkadmin, catchError(leave.rejectLeave));
 
 //ASSESSEMENT ROUTES

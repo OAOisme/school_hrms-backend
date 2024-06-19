@@ -6,10 +6,15 @@ const Authentication = require('../controllers/authentication');
 const Paysilp = require('../controllers/payslip');
 const Leave = require('../controllers/leavemgt');
 const { catchError } = require('../middleware/errors');
+const { getSelf } = require('../controllers/employee_mgt');
+
 
 //AUTHENTICATION ROUTES
 router.route('/login')
     .post(catchError(Authentication.login_employee));
+
+router.route('/self')
+    .post(checkuser, catchError(getSelf));
 
 
 //PAYSLIP ROUTES

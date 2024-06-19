@@ -38,6 +38,7 @@ module.exports.login_school = async (req, res) => {
             });
             audit('School login', 'School', school._id);
             res.cookie('token', token, { httpOnly: true });
+            console.log("Authentication Successful \t Username: " + school.email)
             res.status(200).json({
                 message: 'Authentication successful',
                 token: token
@@ -56,7 +57,7 @@ module.exports.login_school = async (req, res) => {
 };
 
 module.exports.login_employee = async (req, res) => {
-    const employee = await employeeModel.findOne({ staffid: req.body.staffid })
+    const employee = await employeeModel.findOne({ staffid: req.body.staffID })
     if (employee) {
         if (bcrypt.compareSync(req.body.password, employee.password)) {
             const token = jwt.sign({
@@ -66,6 +67,7 @@ module.exports.login_employee = async (req, res) => {
                 expiresIn: '10h'
             });
             audit('Employee login', 'Employee', employee._id);
+            console.log("Authentication Successful \t Username: " + employee.staffid + "\tName: \t" + employee.name)
             res.cookie('token', token, { httpOnly: true });
             res.status(200).json({
                 message: 'Authentication successful',

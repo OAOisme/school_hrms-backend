@@ -3,7 +3,7 @@ const audit = require('../middleware/audit');
 const bcrypt = require('bcrypt');
 
 module.exports.get_all_employees = async (req, res, next) => {
-    const employees = await employeeModel.find({ school: req.school._id })
+    const employees = await employeeModel.find({ school: req.school._id }).populate(['roles', 'payslipComponent']);
     audit('Get all employees', 'Employee', req.school._id);
     res.status(200).json({
         employees: employees
@@ -46,6 +46,12 @@ module.exports.update_employee = async (req, res, next) => {
     employee.staffid = req.body.staffid;
     employee.name = req.body.name;
     employee.roles = req.body.roles;
+    employee.payslipComponent = req.body.payslipComponent._id;
+    console.log(req.body);
+    console.log(employee);
+    if (req.body.email) {
+        employee.email = req.body.email;
+    }
     await employee.save()
     res.status(200).json({
         message: 'Employee updated successfully',
@@ -61,4 +67,11 @@ module.exports.delete_employee = async (req, res, next) => {
         message: 'Employee deleted successfully'
     });
 
+}
+
+module.exports.getSelf = async (req, res, next) => {
+    const details = await employeeModel.findById(req.employee._id).populate(['school', 'roles', 'payslipComponent'])
+    res.status(200).json({
+        employee: details
+    })
 }

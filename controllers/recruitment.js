@@ -57,6 +57,7 @@ module.exports.get_recruitment = async (req, res, next) => {
 }
 
 module.exports.update_recruitment = async (req, res, next) => {
+    console.log(req.body);
     const recruitment = await recruitmentModel.findById(req.params.id);
     recruitment.name = req.body.name;
     recruitment.description = req.body.description;

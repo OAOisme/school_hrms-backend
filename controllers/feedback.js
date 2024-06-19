@@ -1,10 +1,14 @@
 const feedbackModel = require('../models/feedback');
+const schoolModel = require('../models/school');
 
 module.exports.create_feedback = async (req, res) => {
+    console.log(req.body)
+    const school = await schoolModel.findOne({ "name": req.body.school })
+    console.log(school)
     const feedback = new feedbackModel({
         title: req.body.title,
-        feedback: req.body.feedback,
-        school: req.school._id
+        feedback: req.body.description,
+        school: school._id
     });
     const result = await feedback.save()
     res.status(201).json({

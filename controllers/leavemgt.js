@@ -12,7 +12,7 @@ module.exports.get_all_leaves = async (req, res, next) => {
 }
 
 module.exports.getUnapprovedLeaves = async (req, res, next) => {
-    const leaves = await leaveModel.find({ school: req.school._id, status: 'Pending' })
+    const leaves = await leaveModel.find({ school: req.school._id, status: 'Pending' }).populate('employee')
     audit('Get unapproved leaves', 'Leave', req.school._id);
     res.status(200).json({
         leaves: leaves
@@ -48,7 +48,7 @@ module.exports.getOneLeaveS = async (req, res, next) => {
 //EMPLOYEE REQUESTS
 module.exports.getEmployeeLeaves = async (req, res, next) => {
     const leaves = await leaveModel.find({ employee: req.employee._id })
-    audit('Get employee leaves', 'Leave', req.school._id);
+    audit('Get employee leaves', 'Leave', req.employee.school);
     res.status(200).json({
         leaves: leaves
     });
@@ -72,7 +72,7 @@ module.exports.create_leave = async (req, res, next) => {
         status: 'Pending'
     });
     await leave.save();
-    audit('Create leave', 'Leave', req.school._id);
+    audit('Create leave', 'Leave', req.employee.school);
     res.status(201).json({
         message: 'Leave created',
         leave: leave

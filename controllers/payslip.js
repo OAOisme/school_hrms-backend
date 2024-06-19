@@ -4,7 +4,7 @@ const employeeModel = require('../models/employee');
 const payslipComponent = require('../models/payslipComponent');
 
 module.exports.get_all_payslips = async (req, res, next) => {
-    const payslips = await payslip.find({ school: req.school._id })
+    const payslips = await payslip.find({ school: req.school._id }).populate('employee');
     audit('Get all payslips', 'Payslip', req.school._id);
     res.status(200).json({
         payslips: payslips
@@ -100,8 +100,8 @@ module.exports.getPayslipComponents = async (req, res, next) => {
 
 module.exports.getEmployeePayslips = async (req, res, next) => {
     const employee = req.employee._id;
-    const payslips = payslip.find({ employee: employee })
-    audit('Get employee payslips', 'Payslip', req.school._id);
+    const payslips = await payslip.find({ employee: employee })
+    audit('Get employee payslips', 'Payslip', req.employee.school);
     res.status(200).json({
         payslips: payslips
     });
